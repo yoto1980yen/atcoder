@@ -2,9 +2,9 @@ input = gets.chomp
 
 input = gets.split
 
-input = gets.to_i
+n = gets.to_i
 
-input = gets.split.map(&:to_i)
+a = gets.split.map(&:to_i)
 
 X.times do 
     input += gets.split
@@ -20,6 +20,20 @@ while true
     
 end
 
+#木構造の配列
+n = gets.to_i
+a = gets.split.map(&:to_i)
+list = []
+n.times do
+    list << []
+end
+(n - 1).times do |i|
+    now = gets.split.map(&:to_i)
+    list[now[0]] << now[1]
+    # 両方向いけるなら追加
+    # 一方通行ならなし
+    list[now[1]] << now[0]
+end
 # A to Z
 atoz = ('A'..'Z').to_a
 
@@ -38,7 +52,7 @@ Prime.prime?(i)
 # 重複を取り除く
 ary.uniq()
 
-# 先頭の要素を追加
+# 先頭に要素を追加
 ary.unshift
 
 # 先頭の要素を削除
