@@ -6,6 +6,9 @@ n = gets.to_i
 
 a = gets.split.map(&:to_i)
 
+# 使う範囲を[]で指定できる
+a = gets.split.map(&:to_i)[1...]
+
 X.times do 
     input += gets.split
 end
@@ -50,7 +53,7 @@ require "prime"
 Prime.prime?(i)
 
 # 重複を取り除く
-ary.uniq()
+ary.uniq
 
 # 先頭に要素を追加
 ary.unshift
