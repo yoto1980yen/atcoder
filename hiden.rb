@@ -52,6 +52,27 @@ end
 require "prime"
 Prime.prime?(i)
 
+# 素因数分解
+require 'prime'
+12.prime_division #=> [[2,2], [3,1]]
+10.prime_division #=> [[2,1], [5,1]]
+
+# 約数列挙
+def divisors(n)
+    result = []
+    doit = ->(pd, acc) {
+        return if pd.empty?
+        x, *xs = pd
+        (0..x[1]).each do |i|
+            e = acc * x[0] ** i
+            result << e
+            doit.(xs, e)
+        end
+    }
+    doit.(n.prime_division, 1)
+    result.uniq
+end
+
 # 重複を取り除く
 ary.uniq
 
@@ -82,7 +103,23 @@ end
 # 3~6の合計が欲しい場合
 pp s[6] - s[2]
 
+# バイナリサーチ 近くの要素取得(最初に該当するものが返り値となる)
+aryr = [1,2,3,4,5,6,7,8,9,10].sort.reverse
+ary = [1,2,3,4,5,6,7,8,9,10].sort
+aryr.bsearch {|x| x < 5 }
 
+# HashのKeyがあるかValueがあるか？
+p({1 => "one"}.key?(1)) # => true
+p({1 => "one"}.key?(2)) # => false
+p({1 => "one"}.value?("one")) #=> true
+p({1 => "one"}.value?("two")) #=> false
+
+# 配列の要素の数を集計したい
+["a", "b", "c", "b"].tally  #=> {"a"=>1, "b"=>2, "c"=>1}
+
+# 配列の列と行を入れ替える(しかし要素のサイズが同じでないとエラーになる)
+[[1,2],[3,4],[5,6]].transpose
+# => [[1, 3, 5], [2, 4, 6]]
 
 # 配列の作れる組み合わせ
 a = [1, 2, 3, 4]
@@ -92,5 +129,6 @@ a.combination(3).to_a  #=> [[1,2,3],[1,2,4],[1,3,4],[2,3,4]]
 a.combination(4).to_a  #=> [[1,2,3,4]]
 a.combination(0).to_a  #=> [[]]: one combination of length 0
 a.combination(5).to_a  #=> []  : no combinations of length 5
+
 # tips
 # 順番気にしなくていいならSet使え
