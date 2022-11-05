@@ -72,6 +72,18 @@ ary.sort.reverse
 # インデックス付きでソート
 ary.each_with_index.sort
 
+# 累積和
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+s = Array.new(arr.size + 1)
+s[0] = 0
+(0...arr.size).each do |i|
+    s[i+1] = s[i] + arr[i]
+end
+# 3~6の合計が欲しい場合
+pp s[6] - s[2]
+
+
+
 # 配列の作れる組み合わせ
 a = [1, 2, 3, 4]
 a.combination(1).to_a  #=> [[1],[2],[3],[4]]
