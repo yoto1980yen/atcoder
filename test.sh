@@ -1,2 +1,2 @@
 #!/bin/bash
-cat input.txt | ruby abc277/277d.rb
+cat input.txt | ruby abc278/278c.rb
