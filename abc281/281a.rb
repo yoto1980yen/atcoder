@@ -1,21 +1,8 @@
 def main
-    h, w = intary
-    s = []
-    t = []
-    h.times do
-        s << strary
+    n = int
+    (n+1).times do |i|
+        pp n - i
     end
-    h.times do
-        t << strary
-    end
-    s = s.transpose.sort
-    t = t.transpose.sort
-    w.times do
-        next if s.shift == t.shift
-        puts "No"
-        return
-    end
-    puts "Yes"
 end
 
 #----------------------------------------------------------------------------------

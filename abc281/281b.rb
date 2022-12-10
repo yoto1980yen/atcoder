@@ -1,21 +1,22 @@
 def main
-    h, w = intary
-    s = []
-    t = []
-    h.times do
-        s << strary
-    end
-    h.times do
-        t << strary
-    end
-    s = s.transpose.sort
-    t = t.transpose.sort
-    w.times do
-        next if s.shift == t.shift
+    n = strary
+    if n.size != 8
         puts "No"
         return
     end
-    puts "Yes"
+    first = n.shift
+    last = n.pop
+    if first != is_lower?(first) && number?(first) == false
+        if number?(n.join(""))
+            if n.first != "0"
+                if last != is_lower?(last) && number?(last) == false
+                    puts "Yes"
+                    return
+                end
+            end
+        end
+    end
+    puts "No"
 end
 
 #----------------------------------------------------------------------------------
@@ -31,6 +32,14 @@ end
 def strary
     gets.chomp.split("")
 end
+def is_lower?(c)
+    c != c.upcase
+end
+def number?(str)
+# 文字列の先頭(\A)から末尾(\z)までが「0」から「9」の文字か
+nil != (str =~ /\A[0-9]+\z/)
+end
+
 # 約数列挙
 def divisors(n)
     result = []

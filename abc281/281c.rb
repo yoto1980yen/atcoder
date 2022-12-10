@@ -1,21 +1,12 @@
 def main
-    h, w = intary
-    s = []
-    t = []
-    h.times do
-        s << strary
-    end
-    h.times do
-        t << strary
-    end
-    s = s.transpose.sort
-    t = t.transpose.sort
-    w.times do
-        next if s.shift == t.shift
-        puts "No"
-        return
-    end
-    puts "Yes"
+    n, t = intary
+    a = intary
+    max = a.sum
+    ruiseki = ruiseki(a)
+    ans = t % ruiseki.last
+    aryr = ruiseki.reverse
+    kyoku = aryr.bsearch {|x| x < ans }
+    puts "#{ruiseki.index(kyoku) + 1} #{ans - kyoku}"
 end
 
 #----------------------------------------------------------------------------------
