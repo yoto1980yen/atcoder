@@ -130,5 +130,49 @@ a.combination(4).to_a  #=> [[1,2,3,4]]
 a.combination(0).to_a  #=> [[]]: one combination of length 0
 a.combination(5).to_a  #=> []  : no combinations of length 5
 
-# tips
+# 優先度付きキュー
+def add(n)
+    i = @size
+    while i > 0 do
+        parent_index = (i - 1) / 2
+        break if n >= @heap[parent_index]
+    
+        @heap[i] = @heap[parent_index]
+        i = parent_index
+    end
+    
+    @heap[i] = n
+    @size += 1
+end
+
+def pop
+    return if @size <= 0
+    min_n = @heap[0]
+    @size -= 1
+    n = @heap[@size]
+    i = 0
+    while i * 2 + 1 < @size do
+        child_index1 = i * 2 + 1
+        child_index2 = i * 2 + 2
+        if child_index2 < @size && @heap[child_index2] < @heap[child_index1]
+        child_index1 = child_index2
+        end
+        break if @heap[child_index1] >= n
+    
+        @heap[i] = @heap[child_index1]
+        i = child_index1
+    end
+    @heap[i] = n
+    min_n
+end
+
+def min; @heap[0] end
+def values; @heap.first(@size) end
+def inspect; "Heap: #{values}" end
+n, k = gets.split.map(&:to_i)
+@heap = gets.split.map(&:to_i)
+@size = n
 # 順番気にしなくていいならSet使え
+require 'set'
+p Set.new
+p Set.new([1, 2])  

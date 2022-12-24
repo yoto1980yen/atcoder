@@ -46,11 +46,11 @@ edges.each do |i, j|
 end
 aparent = []
 @parent.each do |i|
-    aparent << i
+    aparent << i.dup
 end
 aparity = []
 @parity.each do |i|
-    aparity << i
+    aparity << i.dup
 end
 n.times do |i|
     ss = graph[i].sort
@@ -63,8 +63,9 @@ n.times do |i|
         pp i
         pp j
         ans += union(i, j)
-        pp @parent = aparent
-        @parity = aparity
+        pp @parent
+        pp @parent = aparent.dup
+        @parity = aparity.dup
     end
     
 end

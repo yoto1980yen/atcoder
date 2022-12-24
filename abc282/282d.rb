@@ -1,9 +1,41 @@
 def main
     N, M = intary
-    $graph = []
-    (M + 1).times { $graph << [] }
+    graph = []
+    (M + 1).times { graph << [] }
+    N.times do
+        u, v = gets.split.map(&:to_i)
+        $graph[u] << v
+        $graph[v] << u
+    end
     @parent = Array.new(n, -1)
     @parity = Array.new(n, 0)
+    graph.each { |i, j| union(i, j) }
+    # n.times { |k| find(k) }  # fix @parity: relative to find(i)
+
+end
+def find(i)
+    return i if @parent[i] < 0
+
+    j = @parent[i]
+    k = find(j)
+    @parity[i] ^= @parity[j]
+    @parent[i] = k
+end
+def union(i, j)
+    ii = find(i)
+    jj = find(j)
+    expected = 1 ^ @parity[i] ^ @parity[j]
+
+    if ii == jj
+        raise "Not bipartite" if expected != 0
+        return
+    end
+
+    ii, jj = jj, ii if -@parent[ii] < -@parent[jj]
+    @parent[ii] += @parent[jj]
+    @parent[jj] = ii
+    @parity[jj] = expected
+    nil
 end
 def hukasa(list)
     list.each do |i|
