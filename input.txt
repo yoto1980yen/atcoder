@@ -1,1 +1,6 @@
-abca
+5
+aaa bbb
+yyy zzz
+ccc ddd
+xxx yyy
+bbb ccc
