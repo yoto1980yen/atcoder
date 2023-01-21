@@ -1,6 +1,3 @@
-5
-aaa bbb
-yyy zzz
-ccc ddd
-xxx yyy
-bbb ccc
+2 18
+2 3
+5 6
