@@ -1,41 +1,8 @@
 def main
-    s = strary
-    t = strary
-    l = s[(s.count - t.count)..-1]
-    fac = 0
-    list = []
-    judge = false
-    t.count.times do |i|
-        if l[i] == t[i] || l[i] == "?" || t[i] == "?"
-            list[i] = true
-            next
-        end
-        list[i] = false
-        fac += 1
-    end
-    if fac == 0
-        puts "Yes"
-    else
-        puts "No"
-    end
-    t.count.times do |i|
-        nows = s.shift
-        nowt = t.shift
-        # pp "#{nows} #{nowt}"
-        if nowt == nows ||  nowt == "?" || nows == "?"
-            fac -= 1
-            if fac <= 0
-                fac = 0
-            end
-        else
-            fac += 1
-        end
-        pp fac
-        if fac == 0 && judge == false
-            puts "Yes"
-        else
-            puts "No"
-        end
+    n = int
+    n.times do
+        a, b = intary
+        puts a + b
     end
 end
 

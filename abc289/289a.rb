@@ -1,42 +1,11 @@
 def main
-    s = strary
-    t = strary
-    l = s[(s.count - t.count)..-1]
-    fac = 0
-    list = []
-    judge = false
-    t.count.times do |i|
-        if l[i] == t[i] || l[i] == "?" || t[i] == "?"
-            list[i] = true
-            next
-        end
-        list[i] = false
-        fac += 1
+    n = strary
+    ans = []
+    n.each do |i|
+        i == "0" ? ans << "1" : ans << "0"
+        
     end
-    if fac == 0
-        puts "Yes"
-    else
-        puts "No"
-    end
-    t.count.times do |i|
-        nows = s.shift
-        nowt = t.shift
-        # pp "#{nows} #{nowt}"
-        if nowt == nows ||  nowt == "?" || nows == "?"
-            fac -= 1
-            if fac <= 0
-                fac = 0
-            end
-        else
-            fac += 1
-        end
-        pp fac
-        if fac == 0 && judge == false
-            puts "Yes"
-        else
-            puts "No"
-        end
-    end
+    puts ans.map(&:to_i).join("")
 end
 
 #----------------------------------------------------------------------------------
@@ -45,7 +14,7 @@ def int
 end
 
 def intary
-    gets.split.map(&:to_i)
+    gets.split("").map(&:to_i)
 end
 
 def str

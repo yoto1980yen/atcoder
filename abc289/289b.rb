@@ -1,42 +1,25 @@
 def main
-    s = strary
-    t = strary
-    l = s[(s.count - t.count)..-1]
-    fac = 0
-    list = []
-    judge = false
-    t.count.times do |i|
-        if l[i] == t[i] || l[i] == "?" || t[i] == "?"
-            list[i] = true
-            next
-        end
-        list[i] = false
-        fac += 1
-    end
-    if fac == 0
-        puts "Yes"
-    else
-        puts "No"
-    end
-    t.count.times do |i|
-        nows = s.shift
-        nowt = t.shift
-        # pp "#{nows} #{nowt}"
-        if nowt == nows ||  nowt == "?" || nows == "?"
-            fac -= 1
-            if fac <= 0
-                fac = 0
+    n, m = intary
+    a = intary
+    hako = []
+    ans = []
+    (n+1).times do |i|
+        next if i == 0
+        now = a.first
+        if i == now
+            hako << i
+            a.shift
+        elsif hako.size >= 1
+            ans << i
+            hako.reverse.each do |j|
+                ans << j
             end
+            hako = []
         else
-            fac += 1
-        end
-        pp fac
-        if fac == 0 && judge == false
-            puts "Yes"
-        else
-            puts "No"
+            ans << i
         end
     end
+    puts ans.join(" ")
 end
 
 #----------------------------------------------------------------------------------

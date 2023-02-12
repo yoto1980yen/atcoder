@@ -1,44 +1,41 @@
 def main
-    s = strary
-    t = strary
-    l = s[(s.count - t.count)..-1]
-    fac = 0
-    list = []
-    judge = false
-    t.count.times do |i|
-        if l[i] == t[i] || l[i] == "?" || t[i] == "?"
-            list[i] = true
+    n, m = intary
+    $path = {}
+    $judge = {}
+    m.times do |i|
+        u, v = intary
+        $path[u]? $path[u] << v : $path[u] = [v]
+        $path[v]? $path[v] << u : $path[v] = [u]
+        $judge[u] = false
+        $judge[v] = false
+    end
+    $ans = 0
+    $path.keys.each do |k|
+        next if $judge[k]
+        $judge[k] = true
+        # pp "いです#{k}"
+        saiki(k, 0)
+        # pp $judge
+    end
+    pp $ans / 2
+end
+def saiki(i, before)
+    now = $path[i]
+    if i == nil
+        return
+    end
+    $path[i].each do |j|
+        if $judge[j] && before != j
+            $ans += 1
+            # pp "#{i} #{j} #{$judge} #{before}"
             next
         end
-        list[i] = false
-        fac += 1
-    end
-    if fac == 0
-        puts "Yes"
-    else
-        puts "No"
-    end
-    t.count.times do |i|
-        nows = s.shift
-        nowt = t.shift
-        # pp "#{nows} #{nowt}"
-        if nowt == nows ||  nowt == "?" || nows == "?"
-            fac -= 1
-            if fac <= 0
-                fac = 0
-            end
-        else
-            fac += 1
-        end
-        pp fac
-        if fac == 0 && judge == false
-            puts "Yes"
-        else
-            puts "No"
+        if $judge[j] == false
+            $judge[j] = true
+            saiki(j, i)
         end
     end
 end
-
 #----------------------------------------------------------------------------------
 def int
     gets.to_i

@@ -1,44 +1,28 @@
 def main
-    s = strary
-    t = strary
-    l = s[(s.count - t.count)..-1]
-    fac = 0
+    n, m = intary
+    
     list = []
-    judge = false
-    t.count.times do |i|
-        if l[i] == t[i] || l[i] == "?" || t[i] == "?"
-            list[i] = true
-            next
-        end
-        list[i] = false
-        fac += 1
+    m.times do |i|
+        c = int
+        list << intary
     end
-    if fac == 0
-        puts "Yes"
-    else
-        puts "No"
-    end
-    t.count.times do |i|
-        nows = s.shift
-        nowt = t.shift
-        # pp "#{nows} #{nowt}"
-        if nowt == nows ||  nowt == "?" || nows == "?"
-            fac -= 1
-            if fac <= 0
-                fac = 0
+    count = 0
+    co = (0...m).to_a
+    (m+1).times do |i|
+        next if i == 0
+        now = co.combination(i).to_a
+        now.each do |j|
+            c = Set.new([])
+            j.each do |k|
+                c.merge(list[k])
             end
-        else
-            fac += 1
+            count += 1 if c.size == n
         end
-        pp fac
-        if fac == 0 && judge == false
-            puts "Yes"
-        else
-            puts "No"
-        end
+        
     end
+    puts count
 end
-
+require 'set'
 #----------------------------------------------------------------------------------
 def int
     gets.to_i

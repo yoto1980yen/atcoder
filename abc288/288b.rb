@@ -1,24 +1,14 @@
 def main
-    n = int
-    pp ans = n.to_s(26).split("")
+    n, k = intary
     list = []
-    ll = ("1".."9").to_a + ('a'..'z').to_a
-    ans.size.times do |i|
-        if ans[i] == "0"
-            now = list.pop
-            if now == "z"
-                list << "y"
-            end
-            list << "z"
-        else
-            list << ll[ll.index(ans[i]) + 9]
-        end
+    k.times do
+        list << str
     end
-    puts list.join("")
-
+    list.sort.each do |i|
+        puts i
+    end
 end
 
-require 'set'
 #----------------------------------------------------------------------------------
 def int
     gets.to_i
@@ -33,7 +23,7 @@ def str
 end
 
 def strary
-    gets.chomp.split
+    gets.chomp.split("")
 end
 
 def is_lower?(c)
