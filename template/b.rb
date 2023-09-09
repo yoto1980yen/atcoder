@@ -4,7 +4,6 @@ end
 
 #----------------------------------------------------------------------------------
 require "set"
-require "prime"
 def int
     gets.to_i
 end
@@ -25,8 +24,53 @@ def is_lower?(c)
     c != c.upcase
 end
 
+def grouping(ary)
+    ary.slice_when { |a, b| a != b }.to_a
+end
+
 def number?(str)
 nil != (str =~ /\A[0-9]+\z/)
+end
+
+def make_tree(n, path, way = false)
+    if n != 0
+        tree = {}
+        path.times do |i|
+            u,v = intary
+            tree[u] ? tree[u] << v : tree[u] = v
+            if way
+                tree[v] ? tree[v] << u : tree[v] = u
+            end
+        end
+    else
+        tree = Array.new(n+1) {Array.new}
+        path.times do |i|
+            u,v = intary
+            tree[u] << v
+            if way
+                tree[v] << u
+            end
+        end
+    end
+    return tree
+end
+
+def make_visited(n)
+    Array.new(n+1, false)
+end
+
+def make_map(n, type)
+    map = []
+    if type == "s"
+        n.times do |i|
+            map << strary
+        end
+    elsif type == "i"
+        n.times do |i|
+            map << intary
+        end
+    end
+    return map
 end
 
 def nisinsu(int)
