@@ -5,11 +5,11 @@ end
 #----------------------------------------------------------------------------------
 require "set"
 def int
-    gets.to_i
+    gets.chomp.to_i
 end
 
 def intary
-    gets.split(" ").map(&:to_i)
+    gets.chomp.split(" ").map(&:to_i)
 end
 
 def str
