@@ -32,6 +32,16 @@ def number?(str)
 nil != (str =~ /\A[0-9]+\z/)
 end
 
+# 階乗
+def factorial(n, bottom=1)
+    n == 0 ? 1 : (bottom..n).inject(:*)
+end
+
+# nCr
+def nCr(n, r)
+    factorial(n) / (factorial(r) * factorial(n-r))
+end
+
 def make_tree(n, path, way = false)
     if n != 0
         tree = {}
