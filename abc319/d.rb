@@ -1,5 +1,36 @@
 def main
-    
+        n,m= intary
+        l = intary
+        min = 0
+        max = 1000000000000
+        while min + 1 != max
+            center = (min + max) / 2
+            # pp "#{min} #{max} ↓center"
+            # pp center
+            gyou = 1
+            size = 0
+            judge = true
+            l.each do |i|
+                if center < i 
+                    judge = false
+                    break
+                end
+                size += i + 1
+                if size - 1 >= center
+                    size = i + 1
+                    gyou += 1
+                end
+                # pp "#{size} #{gyou}"
+            end
+            # pp "#{min} #{max} #{gyou} #{size} #{l.sum}"
+            judge = false if gyou > m
+            if judge
+                max = center
+            else
+                min = center
+            end
+        end
+        pp min
 end
 
 #----------------------------------------------------------------------------------
@@ -17,7 +48,7 @@ def str
 end
 
 def strary
-    gets.chomp.split("")
+    gets.chomp.split(" ")
 end
 
 def is_lower?(c)

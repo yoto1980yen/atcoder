@@ -1,9 +1,34 @@
 def main
-    
+    n,m = intary
+    $visited = make_visited(n)
+    $tree = Array.new(n+1) {Array.new}
+    m.times do |i|
+        u,v, x, y = intary
+        $tree[u] << [v, x, y]
+        $tree[v] << [u, -x, -y]
+    end
+    $visited[1] = [0, 0]
+    saiki(1)
+    $visited.shift
+    $visited.each do |i|
+        if i
+            puts i.join(" ")
+        else
+            puts "undecidable"
+        end
+    end
 end
 
 #----------------------------------------------------------------------------------
 require "set"
+def saiki(n)
+    $tree[n].each do |i|
+        next if $visited[i[0]]
+        $visited[i[0]] = [$visited[n][0] + i[1], $visited[n][1] + i[2]]
+        saiki(i[0])
+    end
+end
+
 def int
     gets.to_i
 end
