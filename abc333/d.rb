@@ -11,8 +11,9 @@ def main
     $count = []
     $tree[1].each do |i|
         $nowcount = 0
+        $visited[i] = true
         saiki(i)
-        $count << $nowcount - 1
+        $count << $nowcount
     end
     puts $count.sum - $count.max + 1
 end
