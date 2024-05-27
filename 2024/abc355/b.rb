@@ -1,5 +1,22 @@
 def main
-    
+    n, m = intary
+    a = intary
+    b = intary
+    c = (a + b).sort
+    judge = true
+    c.each do |i|
+        if a.include?(i)
+            if judge
+                judge = false
+            else
+                puts "Yes"
+                return
+            end
+        else
+            judge = true
+        end
+    end
+    puts "No"
 end
 
 #----------------------------------------------------------------------------------

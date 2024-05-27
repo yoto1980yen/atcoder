@@ -1,15 +1,157 @@
 def main
-    a = intary
-    b = [1, 2, 3]
-    if (b - a).size >= 2
-        puts -1
-    else
-        puts (b - a).first
+    n = int
+    motomap = []
+    n.times do |i|
+        motomap << intary.reverse
+    end
+    kuren = Array.new(5) {Array.new}
+    anskuren = Array.new(5) {Array.new}
+    3.times do |i|
+        5.times do |j|
+            kuren[j] << "P" + "R" * (3 - i) + "Q" + "L" * (3 - i)
+        end
+    end
+    5.times do |i|
+        anskuren[i] << "." * 20000
+    end
+    find = Array.new()
+    5.times do |i|
+        find << ((i * 5)...((i + 1) * 5)).to_a
+    end
+    zan = Array.new()
+    5.times do |i|
+        zan << 5
+    end
+    wantindex = 0
+    count = 0
+    nowsize = 0
+    owaricount = 0
+    zancount = 0
+    find.permutation(5).dup.to_a.each do |findd|
+        wantindex = 0
+        count = 0
+        nowsize = 0
+        owaricount = 0
+        zancount = 0
+        find = findd.map(&:dup)
+        map = motomap.map(&:dup)
+        while nowsize <= 10000
+            break if owaricount == 25
+            if find[wantindex].size == 0
+                wantindex += 1
+                wantindex %= 5
+                next
+            end
+            want = find[wantindex].first
+            5.times do |i|
+                (1..4).each do |j|
+                    if map[i][j] == want
+                        owaricount += 1
+                        idou = daiidou(i, j - 1, wantindex)
+                        kuren[0] << idou
+                        if j == 1
+                            taiki = "R" + "." * (i + j - 1)
+                        else
+                            taiki = "." * (i + j)
+                        end
+                        (1..4).each do |k|
+                            kuren[k] << taiki # nokori idou.size - (i + j)
+                        end
+                        zan[i] -= 1
+                        map[i].delete_at(j)
+                        map[i].unshift(30)
+                        tumeru = migizurasi(j - 1, zan[i])
+                        if i == 0
+                            kuren[0] << tumeru
+                            (1..4).each do |k|
+                                kuren[k] << "." * ((idou.size - (i + j)) + tumeru.size)
+                            end
+                        else
+                            if tumeru.size >= idou.size - (i + j)
+                                (0..4).each do |k|
+                                    if i == k
+                                        kuren[k] << tumeru
+                                    elsif k == 0
+                                        kuren[k] << "." * ((tumeru.size + i + j) - idou.size)
+                                    else
+                                        kuren[k] << "." * tumeru.size
+                                    end
+                                end
+                            else
+                                (1..4).each do |k|
+                                    if i == k
+                                        kuren[k] << tumeru
+                                        kuren[k] << "." * (idou.size - (i + j) - tumeru.size)
+                                    else
+                                        kuren[k] << "." * (idou.size - (i + j))
+                                    end
+                                end
+                            end
+                        end
+                        if j == 1
+                            kuren[0] << "."
+                            (1..4).each do |k|
+                                kuren[k] << "L"
+                            end
+                        end
+                        nowsize += tumeru.size + idou.size
+                        find[wantindex].shift
+                    end
+                end
+            end
+            if want == find[wantindex].first
+                zancount += 1
+                if zancount == 4
+                    find[wantindex][0], find[wantindex][1] = find[wantindex][1], find[wantindex][0]
+                    zancount = 0
+                end
+                wantindex += 1 
+                wantindex %= 5
+            else
+                zancount = 0
+            end
+        end
+        anskuren = kuren.map(&:dup) if kuren.first.join("").slice(0..10000).size <= anskuren.first.join("").slice(0..10000).size
+    end
+    anskuren.each do |i|
+        puts i.join("").slice(0..10000)
     end
 end
 
 #----------------------------------------------------------------------------------
 require "set"
+def daiidou(y, x, index)
+    if x == 0
+        return "R" * x + "D" * y + "P" + "U" * y + "R" * (4 - x) + "D" * index + "Q" + "U" * index + "L" * 4
+    else
+        if y >= index
+            return "R" * x + "D" * y + "P" + "R" * (4 - x) + "U" * (y - index) + "Q" + "U" * index + "L" * 4
+        else
+            return "R" * x + "D" * y + "P" + "R" * (4 - x) + "D" * (index - y) + "Q" + "U" * index + "L" * 4
+        end
+    end
+end
+
+def migizurasi(yoko, zanki)
+    return "" if yoko == 0
+    motu = 3 - yoko
+    return "" if zanki <= motu
+    kaesu = "R" * yoko
+    ([zanki - motu, yoko].min).times do |i|
+        kaesu += "L" + "P" + "R" + "Q" + "L"
+    end
+    kaesu += "L" * (yoko - [zanki - motu, yoko].min)
+    return kaesu
+end
+
+def yokeru(index,wait)
+    if index == 0
+        return "D" + (wait * 2 - 1) * "." + "U"
+    else
+        return "U" + (wait * 2 - 1) * "." + "D"
+    end
+end
+
 def int
     gets.chomp.to_i
 end

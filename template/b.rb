@@ -117,6 +117,38 @@ def ruiseki(arr)
     end
     return s
 end
+class UnionFind
+    def initialize(size)
+        @rank = Array.new(size, 0)
+        @parent = Array.new(size, &:itself)
+    end
+
+    def unite(id_x, id_y)
+        x_parent = get_parent(id_x)
+        y_parent = get_parent(id_y)
+        return if x_parent == y_parent
+        if @rank[x_parent] > @rank[y_parent]
+            @parent[y_parent] = x_parent
+        else
+            @parent[x_parent] = y_parent
+            @rank[y_parent] += 1 if @rank[x_parent] == @rank[y_parent]
+        end
+    end
+
+    def get_parent(id_x)
+        @parent[id_x] == id_x ? id_x : (@parent[id_x] = get_parent(@parent[id_x]))
+    end
+
+    def same_parent?(id_x, id_y)
+        get_parent(id_x) == get_parent(id_y)
+    end
+    def size
+        @parent.map { |id_x| get_parent(id_x) }.uniq.size
+        # @parent.map.with_index.count(&:==) 
+        # とすることも出来ます!
+    end
+end
+
 class PriorityQueue
     # By default, the priority queue returns the maximum element first.
     # If a block is given, the priority between the elements is determined with it.

@@ -1,5 +1,35 @@
 def main
-    
+    n , t = intary
+    a =intary
+    map = []
+    n.times do |i|
+        map << ((i * n + 1)..(n * (i + 1))).to_a
+    end
+    # pp map
+    yokolist = Array.new(n+1, 0)
+    tatelist = Array.new(n+1, 0)
+    nanamelist = [Set.new(), Set.new()]
+    n.times do |i|
+        nanamelist[0] << (1 + n) * i + 1
+        nanamelist[1] << (n - 1) * i + n
+    end
+    # pp nanamelist
+    naname = Array.new(2, 0)
+    a.each.with_index do |i, index|
+        # pp "#{i}ta-nn"
+        yokolist[(i- 1) / n] += 1
+        tatelist[i % n] += 1
+        naname[0] += 1 if nanamelist[0].include?(i)
+        naname[1] += 1 if nanamelist[1].include?(i)
+        if  naname[0] == n || naname[1] == n || tatelist[i % n] == n || yokolist[(i-1) / n] == n
+            puts index + 1
+            return
+        end
+        # pp yokolist
+        # pp tatelist
+        # pp naname
+    end
+    puts -1
 end
 
 #----------------------------------------------------------------------------------

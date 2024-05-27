@@ -130,6 +130,14 @@ a.combination(4).to_a  #=> [[1,2,3,4]]
 a.combination(0).to_a  #=> [[]]: one combination of length 0
 a.combination(5).to_a  #=> []  : no combinations of length 5
 
+a = [1, 2, 3]
+a.permutation.to_a     #=> [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+a.permutation(1).to_a  #=> [[1],[2],[3]]
+a.permutation(2).to_a  #=> [[1,2],[1,3],[2,1],[2,3],[3,1],[3,2]]
+a.permutation(3).to_a  #=> [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+a.permutation(0).to_a  #=> [[]]: one permutation of length 0
+a.permutation(4).to_a
+
 # 優先度付きキュー
 def add(n)
     i = @size

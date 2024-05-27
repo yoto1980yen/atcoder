@@ -1,5 +1,87 @@
 def main
+    n = int
+    map = [] 
+    n.times do |i|
+        map << intary
+    end
+    hidari = []
+    migi = []
+    # map.sort.each.with_index do |v, i|
+    #     hidari << v[0]
+    # end
+    # map.sort_by {|x| x[1]}.each do |i|
+    #     migi << i[1]
+    # end
+    # pp map
+    # pp hidari
+    # pp migi
+    # ans = 0
+    # map.each do |i|
+    #     hl = hidari.bsearch_index{|x| x == i[0]}
+    #     hr = hidari.bsearch_index{|x| x >= i[1]}
+    #     mr = migi.bsearch_index{|x| x == i[1]}
+    #     ml = migi.bsearch_index{|x| x >= i[0]}
+    #     hl = 0 if hl == nil
+    #     hr = 0 if hr == nil
+    #     mr= 0 if mr == nil
+    #     ml= 0 if ml == nil
+    #     pp "#{hl} #{hr} #{ml} #{mr}"
+    #     pp n - 1 - hl
+    #     pp hr - 1
+    #     # pp n - (h + 1)
+    #     # pp m
+    #     # pp ans += [n - (h + 1),  m].min
+    # end
+    c = []
+    map.each do |i|
+        c << i[0]
+        c << i[1]
+    end
+    pp c = c.uniq.sort
+    pp cmap = Array.new(c.size, 0)
+    map.sort.each.with_index do |v, i|
+        h = c.bsearch_index{|x| x >= v[0]}
+        h = 0 if h == nil
+        cmap[h] += 1
+    end
+    pp cmap
     
+    ccmap = Array.new(c.size, 0)
+    map.sort_by {|x| x[1]}.each do |i|
+        m = c.bsearch_index{|x| x >= i[1]}
+        m = 0 if m == nil
+        ccmap[m] -= 1
+    end
+    pp ccmap
+    ccmap.unshift(0)
+    pp ccmap
+    s = Array.new(c.size + 1)
+    s[0] = 0
+    (0...cmap.size).each do |i|
+        s[i+1] = s[i] + cmap[i]
+    end
+    pp s
+    pp ccmap
+    ss = Array.new(ccmap.size + 1)
+    ss[0] = 0
+    (0...ccmap.size).each do |i|
+        ss[i+1] = ss[i] + ccmap[i]
+    end
+    pp ss
+    ans = 0
+    s.shift
+    ss.shift
+    map.each do |i|
+        pp l = c.bsearch_index {|x| x >= i[0]}
+        pp r = c.bsearch_index {|x| x >= i[1]}
+        pp (s[r] - s[l]) + (ss[r] - ss[l])
+    end
+    # ss = Array.new(c.size + 1)
+    # ss[0] = 0
+    # (0...cmap.size).each do |i|
+    #     ss[i+1] = ss[i] + cmap[i]
+    # end
+    pp s
 end
 
 #----------------------------------------------------------------------------------
