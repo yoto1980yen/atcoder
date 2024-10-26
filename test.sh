@@ -1,3 +1,3 @@
 #!/bin/bash
-cat ahc.txt | ruby ahc/ahc036/b.rb
-#cat input.txt | ruby 2024/abc369/d.rb
+cat input.txt | ruby ahc/ahc038/a.rb
+#cat input.txt | ruby 2024/abc375/b.rb

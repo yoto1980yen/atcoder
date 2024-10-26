@@ -184,3 +184,13 @@ n, k = gets.split.map(&:to_i)
 require 'set'
 p Set.new
 p Set.new([1, 2])  
+
+# RBTree の使い方
+require 'rbtree'
+list = RBTree.new
+list[1] = true
+list[3] = true
+pp list.min
+pp list.size
+pp list.lower_bound(2)
+pp list.upper_bound(2)
