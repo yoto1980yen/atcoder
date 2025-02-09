@@ -1,5 +1,236 @@
 def main
-    
+    start_time = Time.now
+    n = int
+    map = []
+    n.times do |i|
+        map << strary
+    end
+    ans = []
+    # 2マス以内に出せちゃうなら出す
+    tpmap = map.transpose
+    n.times do |j|
+        if (map[0][j] == "x" || map[0][j] == ".") && map[1][j] == "x"
+            ans << ["U", j]
+            ans << ["U", j]
+            tpmap[j].shift
+            tpmap[j].push(".")
+            tpmap[j].shift
+            tpmap[j].push(".")
+        elsif map[0][j] == "x"
+            ans << ["U", j]
+            tpmap[j].shift
+            tpmap[j].push(".")
+        end
+    end
+    map = tpmap.transpose
+    n.times do |j|
+        if (tpmap[0][j] == "x" || tpmap[0][j] == ".") && tpmap[1][j] == "x"
+            ans << ["L", j]
+            ans << ["L", j]
+            map[j].shift
+            map[j].push(".")
+            map[j].shift
+            map[j].push(".")
+        elsif tpmap[0][j] == "x"
+            ans << ["L", j]
+            map[j].shift
+            map[j].push(".")
+        end
+    end
+    tpmap = map.transpose
+    n.times do |j|
+        if (map[19][j] == "x" || map[19][j] == ".") && map[18][j] == "x"
+            ans << ["D", j]
+            ans << ["D", j]
+            tpmap[j].pop
+            tpmap[j].pop
+            tpmap[j].unshift(".")
+            tpmap[j].unshift(".")
+        elsif map[19][j] == "x"
+            ans << ["D", j]
+            tpmap[j].pop
+            tpmap[j].unshift(".")
+        end
+    end
+    map = tpmap.transpose
+    n.times do |j|
+        if (tpmap[19][j] == "x" || tpmap[19][j] == ".") && tpmap[18][j] == "x"
+            ans << ["R", j]
+            ans << ["R", j]
+            map[j].pop
+            map[j].pop
+            map[j].unshift(".")
+            map[j].unshift(".")
+        elsif tpmap[19][j] == "x"
+            ans << ["R", j]
+            map[j].pop
+            map[j].unshift(".")
+        end
+    end
+    # 各行で鬼だけ集められるか判断
+    tpmap = map.transpose
+    mirujun = [[-1, [19]], [1, [0]], [-2, [19, 18]], [2, [0, 1]], [-3, [19, 18, 17]], [3, [0, 1, 2]]]
+    mirujunhuku = [[-3, [19, 18, 17]], [3, [0, 1, 2]], [-2, [19, 18]], [2, [0, 1]], [-1, [19]], [1, [0]]]
+    # 出来るだけランダムにやる
+    beforemap = []
+    map.each do |i|
+        beforemap << i.dup
+    end
+    [5, 11, 15, 3, 9, 13, 4, 10, 16, 6, 12, 18, 2, 8, 14, 15, 16, 17, 2, 3, 4, 10, 9, 12, 5, 11, 15, 3, 9, 13, 4, 10, 16, 6, 12, 18, 2, 8, 14, 15, 16, 17, 2, 3, 4, 10, 9, 12].each do |x|
+        # もう鬼がいなければ終わり
+        tpmap = map.transpose
+        n.times do |y|
+            if map[x][y] != "x"
+                now = 0
+                if map[x][y] == "o"
+                    mirujunhuku.each do |index|
+                        next if x + index[0] >= 20 || x + index[0] < 0
+                        judge = true
+                        if map[x + index[0]][y] != "o"
+                            index[1].each do |ii|
+                                judge = false if map[ii][y] == "o"
+                            end
+                            if judge
+                                now = index[0]
+                            end
+                        end
+                    end
+                end
+                mirujun.each do |index|
+                    next if x + index[0] >= 20 || x + index[0] < 0
+                    judge = true
+                    # pp map[x + index[0]][y] if x == 5  && y == 6
+                    # pp "#{x + index[0]} #{y}"  if x == 5  && y == 6
+                    # pp tpmap[y] if x == 5  && y == 6
+                    if map[x + index[0]][y] == "x"
+                        index[1].each do |ii|
+                            judge = false if map[ii][y] == "o"
+                        end
+                        if judge
+                            now = index[0]
+                            break 
+                        end
+                    end
+                end
+                if now <= 0
+                    now.abs.times do |i|
+                        ans << ["D", y]
+                        tpmap[y].pop
+                        tpmap[y].unshift(".")
+                    end
+                else
+                    now.abs.times do |i|
+                        ans << ["U", y]
+                        tpmap[y].shift
+                        tpmap[y].push(".")
+                    end
+                end
+            end
+        end
+        map = tpmap.transpose
+        if map[x].index("x") != nil
+            if map[x].index("x") >= map[x].reverse.index("x")
+                (n - map[x].index("x")).times do 
+                    ans << ["R", x]
+                    map[x].pop
+                    map[x].unshift(".")
+                end
+            else
+                (n - map[x].reverse.index("x")).times do 
+                    ans << ["L", x]
+                    map[x].shift
+                    map[x].push(".")
+                end
+            end
+        end
+    end
+    aans = ans.dup
+    while Time.now - start_time <= 1.8 do
+        map = beforemap.dup
+        while true
+            break if Time.now - start_time >= 1.8
+            # もう鬼がいなければ終わり
+            jj = true
+            map.each do |i|
+                jj = false if i.index("x") != nil
+            end
+            break if jj
+            x = rand(1...19)
+            tpmap = map.transpose
+            n.times do |y|
+                if map[x][y] != "x"
+                    now = 0
+                    if map[x][y] == "o"
+                        mirujunhuku.each do |index|
+                            next if x + index[0] >= 20 || x + index[0] < 0
+                            judge = true
+                            if map[x + index[0]][y] != "o"
+                                index[1].each do |ii|
+                                    judge = false if map[ii][y] == "o"
+                                end
+                                if judge
+                                    now = index[0]
+                                end
+                            end
+                        end
+                    end
+                    mirujun.each do |index|
+                        next if x + index[0] >= 20 || x + index[0] < 0
+                        judge = true
+                        if map[x + index[0]][y] == "x"
+                            index[1].each do |ii|
+                                judge = false if map[ii][y] == "o"
+                            end
+                            if judge
+                                now = index[0]
+                                break 
+                            end
+                        end
+                    end
+                    if now <= 0
+                        now.abs.times do |i|
+                            ans << ["D", y]
+                            tpmap[y].pop
+                            tpmap[y].unshift(".")
+                        end
+                    else
+                        now.abs.times do |i|
+                            ans << ["U", y]
+                            tpmap[y].shift
+                            tpmap[y].push(".")
+                        end
+                    end
+                end
+            end
+            map = tpmap.transpose
+            if map[x].index("x") != nil
+                if map[x].index("x") >= map[x].reverse.index("x")
+                    (n - map[x].index("x")).times do 
+                        ans << ["R", x]
+                        map[x].pop
+                        map[x].unshift(".")
+                    end
+                else
+                    (n - map[x].reverse.index("x")).times do 
+                        ans << ["L", x]
+                        map[x].shift
+                        map[x].push(".")
+                    end
+                end
+            end
+        end
+        if aans.size >= ans.size
+            # 福が40人いるのであれば更新
+            # huku = 0
+            # map.each do |i|
+            #     huku += i.count("o") 
+            # end
+            aans = ans.dup# if huku == 40
+        end
+    end
+    aans.each do |i|
+        puts i.join(" ")
+    end
 end
 
 #----------------------------------------------------------------------------------
