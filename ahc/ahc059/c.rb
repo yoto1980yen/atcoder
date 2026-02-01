@@ -1,0 +1,604 @@
+def main
+    $n = int
+    $map = []
+    $n.times do |i|
+        $map << intary
+    end
+    num_list = Array.new($n ** 2 / 2) { Array.new }
+    $n.times do |i|
+        $n.times do |j|
+            num_list[$map[i][j]] << [i, j]
+            if num_list[$map[i][j]].size == 2
+                num_list[$map[i][j]].unshift(euclidean_distance_concise(num_list[$map[i][j]][0], num_list[$map[i][j]][1]))
+                num_list[$map[i][j]].push($map[i][j])
+            end
+        end
+    end
+    # 相棒の距離が近い順の中央値を決めておく
+    center = num_list.each_with_index.sort[99][0][0]
+    nier_list = Set.new
+    num_list.sort.each do |i|
+        break if i[0] >= center
+        nier_list << i[3]
+    end
+    $ways = [[0, 1], [1, 0], [-1, 0], [0, -1]]
+    ans = []
+    # 半分になるまで今の位置から近い順に消していく
+    now_position = [0, 0]
+    delete_count = 0
+    while nier_list.size != 0 do
+        queue = [now_position]
+        visited = Set.new
+        $next_val = false
+        while true
+            now = queue.shift
+            $ways.each do |way|
+                next if now[0] + way[0] >= $n || now[0] + way[0] < 0 || now[1] + way[1] < 0 || now[1] + way[1] >= $n
+                next if visited.include?((now[0] + way[0]) * 1000 + now[1] + way[1])
+                $next_val = $map[now[0] + way[0]][now[1] + way[1]] if nier_list.include?($map[now[0] + way[0]][now[1] + way[1]])
+                queue << [now[0] + way[0], now[1] + way[1]]
+                visited << (now[0] + way[0]) * 1000 + now[1] + way[1]
+            end
+            break if $next_val != false
+        end
+        next_r = num_list[$next_val]
+        if euclidean_distance_concise(now_position, num_list[$next_val][1]) >= euclidean_distance_concise(now_position, num_list[$next_val][2])
+            num_list[$next_val][1], num_list[$next_val][2] = num_list[$next_val][2], num_list[$next_val][1]
+        end
+        # ans << num_list[$next_val][3]
+        # 次セットに行く前に今いる地点からnext_valの近くにもう一セットあるならついでにやる
+        
+        visited = Set.new
+        $first_val = []
+        $second_val = []
+        # まずはnow_positionから
+        queue = [[now_position, 0]]
+        while queue.size != 0 do
+            now, c = queue.shift
+            $ways.each do |way|
+                next if now[0] + way[0] >= $n || now[0] + way[0] < 0 || now[1] + way[1] < 0 || now[1] + way[1] >= $n
+                next if visited.include?((now[0] + way[0]) * 1000 + now[1] + way[1])
+                $first_val << $map[now[0] + way[0]][now[1] + way[1]] if c + 1 <= 4
+                queue << [[now[0] + way[0], now[1] + way[1]], c + 1] if c + 1 <= 4
+                visited << (now[0] + way[0]) * 1000 + now[1] + way[1]
+            end
+        end
+        # 次にnext_val
+        queue = [[num_list[$next_val][1], 0]]
+        while queue.size != 0 do
+            now, c = queue.shift
+            $ways.each do |way|
+                next if now[0] + way[0] >= $n || now[0] + way[0] < 0 || now[1] + way[1] < 0 || now[1] + way[1] >= $n
+                next if visited.include?((now[0] + way[0]) * 1000 + now[1] + way[1])
+                next if $map[now[0] + way[0]][now[1] + way[1]] == false
+                $second_val << $map[now[0] + way[0]][now[1] + way[1]] if c + 1 <= 4
+                queue << [[now[0] + way[0], now[1] + way[1]], c + 1] if c + 1 <= 4
+                visited << (now[0] + way[0]) * 1000 + now[1] + way[1]
+            end
+        end
+
+        # もし重複しているものがあるならついでに削除する
+        if ($first_val & $second_val).size >= 1
+            moyori = ($first_val & $second_val).shift
+            if euclidean_distance_concise(now_position, num_list[moyori][1]) >= euclidean_distance_concise(now_position, num_list[moyori][2])
+                num_list[moyori][1], num_list[moyori][2] = num_list[moyori][2], num_list[moyori][1]
+            end
+            next_route(now_position, num_list[moyori][1]).each_cons(2) do |i|
+                if i[0][0] != i[1][0]
+                    if i[0][0] > i[1][0]
+                        ans << "U"
+                    else
+                        ans << "D"
+                    end
+                else
+                    if i[0][1] > i[1][1]
+                        ans << "L"
+                    else
+                        ans << "R"
+                    end
+                end
+            end
+            ans << "Z"
+            next_route(num_list[moyori][1], num_list[moyori][2]).each_cons(2) do |i|
+                if i[0][0] != i[1][0]
+                    if i[0][0] > i[1][0]
+                        ans << "U"
+                    else
+                        ans << "D"
+                    end
+                else
+                    if i[0][1] > i[1][1]
+                        ans << "L"
+                    else
+                        ans << "R"
+                    end
+                end
+            end
+            ans << "Z"
+            nier_list.delete(num_list[moyori][3])
+            now_position = num_list[moyori][2]
+            $map[num_list[moyori][2][0]][num_list[moyori][2][1]] = false
+            $map[num_list[moyori][1][0]][num_list[moyori][1][1]] = false
+            delete_count += 1
+        end
+
+        next_route(now_position, num_list[$next_val][1]).each_cons(2) do |i|
+            if i[0][0] != i[1][0]
+                if i[0][0] > i[1][0]
+                    ans << "U"
+                else
+                    ans << "D"
+                end
+            else
+                if i[0][1] > i[1][1]
+                    ans << "L"
+                else
+                    ans << "R"
+                end
+            end
+        end
+        ans << "Z"
+        next_route(num_list[$next_val][1], num_list[$next_val][2]).each_cons(2) do |i|
+            if i[0][0] != i[1][0]
+                if i[0][0] > i[1][0]
+                    ans << "U"
+                else
+                    ans << "D"
+                end
+            else
+                if i[0][1] > i[1][1]
+                    ans << "L"
+                else
+                    ans << "R"
+                end
+            end
+        end
+        ans << "Z"
+        nier_list.delete(num_list[$next_val][3])
+        now_position = num_list[$next_val][2]
+        $map[num_list[$next_val][2][0]][num_list[$next_val][2][1]] = false
+        $map[num_list[$next_val][1][0]][num_list[$next_val][1][1]] = false
+        delete_count += 1
+        break if delete_count >= 100
+    end
+    # 半分になったのでいったん下に敷き詰める
+    next_route(now_position, [0,0]).each_cons(2) do |i|
+        if i[0][0] != i[1][0]
+            if i[0][0] > i[1][0]
+                ans << "U"
+            else
+                ans << "D"
+            end
+        else
+            if i[0][1] > i[1][1]
+                ans << "L"
+            else
+                ans << "R"
+            end
+        end
+    end
+    now_position = false
+    moti_card = []
+    gyou = 8
+    gyou = 8 if delete_count <= 90
+    $n.times do |i|
+        $n.times do |j|
+            if i % 2 != 0
+                cache = $n - 1 - j
+            else
+                cache = j
+            end
+            
+            if i < gyou
+                if $map[i][cache] != false
+                    ans << "Z"
+                    moti_card << $map[i][cache]
+                    $map[i][cache] = false
+                end
+            else
+                if $map[i][cache] == false
+                    ans << "X"
+                    $map[i][cache] = moti_card.pop
+                end
+            end
+            if moti_card.size == 0 && i >= gyou
+                now_position = [i, cache]
+                break
+            end
+            if i % 2 != 0
+                ans << "L"
+            else
+                ans << "R"
+            end
+        end
+        break if now_position != false
+        ans.pop
+        ans << "D"
+    end
+    
+
+
+
+
+    num_list = Array.new($n ** 2 / 2) { Array.new }
+    $n.times do |i|
+        $n.times do |j|
+            next if $map[i][j] == false
+            num_list[$map[i][j]] << [i, j]
+            if num_list[$map[i][j]].size == 2
+                num_list[$map[i][j]].unshift(euclidean_distance_concise(num_list[$map[i][j]][0], num_list[$map[i][j]][1]))
+                num_list[$map[i][j]].push($map[i][j])
+            end
+        end
+    end
+    # 最後まで行く
+    nier_list = Set.new
+    num_list.sort.each do |i|
+        next if i[3] == nil
+        nier_list << i[3]
+    end
+    while nier_list.size != 0 do
+        queue = [now_position]
+        visited = Set.new
+        $next_val = false
+        while true
+            now = queue.shift
+            $ways.each do |way|
+                next if now[0] + way[0] >= $n || now[0] + way[0] < 0 || now[1] + way[1] < 0 || now[1] + way[1] >= $n
+                next if visited.include?((now[0] + way[0]) * 1000 + now[1] + way[1])
+                $next_val = $map[now[0] + way[0]][now[1] + way[1]] if nier_list.include?($map[now[0] + way[0]][now[1] + way[1]])
+                queue << [now[0] + way[0], now[1] + way[1]]
+                visited << (now[0] + way[0]) * 1000 + now[1] + way[1]
+            end
+            break if $next_val != false
+        end
+        next_r = num_list[$next_val]
+        if euclidean_distance_concise(now_position, num_list[$next_val][1]) >= euclidean_distance_concise(now_position, num_list[$next_val][2])
+            num_list[$next_val][1], num_list[$next_val][2] = num_list[$next_val][2], num_list[$next_val][1]
+        end
+        # ans << num_list[$next_val][3]
+        next_route(now_position, num_list[$next_val][1]).each_cons(2) do |i|
+            if i[0][0] != i[1][0]
+                if i[0][0] > i[1][0]
+                    ans << "U"
+                else
+                    ans << "D"
+                end
+            else
+                if i[0][1] > i[1][1]
+                    ans << "L"
+                else
+                    ans << "R"
+                end
+            end
+        end
+        ans << "Z"
+        next_route(num_list[$next_val][1], num_list[$next_val][2]).each_cons(2) do |i|
+            if i[0][0] != i[1][0]
+                if i[0][0] > i[1][0]
+                    ans << "U"
+                else
+                    ans << "D"
+                end
+            else
+                if i[0][1] > i[1][1]
+                    ans << "L"
+                else
+                    ans << "R"
+                end
+            end
+        end
+        ans << "Z"
+        nier_list.delete(num_list[$next_val][3])
+        now_position = num_list[$next_val][2]
+        $map[num_list[$next_val][2][0]][num_list[$next_val][2][1]] = false
+        $map[num_list[$next_val][1][0]][num_list[$next_val][1][1]] = false
+    end
+
+
+
+
+
+    ans.each do |i|
+        puts i
+    end
+end
+
+#----------------------------------------------------------------------------------
+require "set"
+def next_route(p1, p2)
+    visited = Array.new($n) {Array.new($n) {Array.new}}
+    visited[p1[0]][p1[1]] = [p1]
+    queue = [p1]
+    while true
+        now = queue.shift
+        $ways.each do |way|
+            next if now[0] + way[0] >= $n || now[0] + way[0] < 0 || now[1] + way[1] < 0 || now[1] + way[1] >= $n
+            next if visited[now[0] + way[0]][now[1] + way[1]] != []
+            queue << [now[0] + way[0], now[1] + way[1]]
+            visited[now[0] + way[0]][now[1] + way[1]] = visited[now[0]][now[1]].dup << [now[0] + way[0], now[1] + way[1]]
+        end
+        break if visited[p2[0]][p2[1]] != []
+    end
+    return visited[p2[0]][p2[1]]
+end
+
+def euclidean_distance_concise(p1, p2)
+  Math.sqrt(p1.zip(p2).map { |a, b| (a - b)**2 }.sum)
+end
+
+def int
+    gets.chomp.to_i
+end
+
+def intary
+    gets.chomp.split(" ").map(&:to_i)
+end
+
+def str
+    gets.chomp
+end
+
+def strary
+    gets.chomp.split("")
+end
+
+def is_lower?(c)
+    c != c.upcase
+end
+
+def grouping(ary)
+    ary.slice_when { |a, b| a != b }.to_a
+end
+
+def number?(str)
+nil != (str =~ /\A[0-9]+\z/)
+end
+
+# 階乗
+def factorial(n, bottom=1)
+    n == 0 ? 1 : (bottom..n).inject(:*)
+end
+
+# nCr
+def nCr(n, r)
+    factorial(n) / (factorial(r) * factorial(n-r))
+end
+
+def make_tree(n, path, way = false)
+    if n != 0
+        tree = {}
+        path.times do |i|
+            u,v = intary
+            tree[u] ? tree[u] << v : tree[u] = v
+            if way
+                tree[v] ? tree[v] << u : tree[v] = u
+            end
+        end
+    else
+        tree = Array.new(n+1) {Array.new}
+        path.times do |i|
+            u,v = intary
+            tree[u] << v
+            if way
+                tree[v] << u
+            end
+        end
+    end
+    return tree
+end
+
+def make_visited(n)
+    Array.new(n+1, false)
+end
+
+def make_map(n, type)
+    map = []
+    if type == "s"
+        n.times do |i|
+            map << strary
+        end
+    elsif type == "i"
+        n.times do |i|
+            map << intary
+        end
+    end
+    return map
+end
+
+def nisinsu(int)
+    return int.to_s(2).chomp
+end
+
+def zeroume(keta, int)
+    sprintf("%0#{keta}d", int)
+end
+
+# 約数列挙
+def divisors(n)
+    result = []
+    
+    doit = ->(pd, acc) {
+        return if pd.empty?
+        x, *xs = pd
+        (0..x[1]).each do |i|
+            e = acc * x[0] ** i
+            result << e
+            doit.(xs, e)
+        end
+    }
+    doit.(n.prime_division, 1)
+    
+    result.uniq.sort
+end
+# 累積和作成
+def ruiseki(arr)
+    s = Array.new(arr.size + 1)
+    s[0] = 0
+    (0...arr.size).each do |i|
+        s[i+1] = s[i] + arr[i]
+    end
+    return s
+end
+class UnionFind
+    def initialize(size)
+        @rank = Array.new(size, 0)
+        @parent = Array.new(size, &:itself)
+    end
+
+    def unite(id_x, id_y)
+        x_parent = get_parent(id_x)
+        y_parent = get_parent(id_y)
+        return if x_parent == y_parent
+        if @rank[x_parent] > @rank[y_parent]
+            @parent[y_parent] = x_parent
+        else
+            @parent[x_parent] = y_parent
+            @rank[y_parent] += 1 if @rank[x_parent] == @rank[y_parent]
+        end
+    end
+
+    def get_parent(id_x)
+        @parent[id_x] == id_x ? id_x : (@parent[id_x] = get_parent(@parent[id_x]))
+    end
+
+    def same_parent?(id_x, id_y)
+        get_parent(id_x) == get_parent(id_y)
+    end
+    def size
+        @parent.map { |id_x| get_parent(id_x) }.uniq.size
+        # @parent.map.with_index.count(&:==) 
+        # とすることも出来ます!
+    end
+end
+
+class PriorityQueue
+    # By default, the priority queue returns the maximum element first.
+    # If a block is given, the priority between the elements is determined with it.
+    # For example, the following block is given, the priority queue returns the minimum element first.
+    # `PriorityQueue.new { |x, y| x < y }`
+    #
+    # A heap is an array for which a[k] <= a[2*k+1] and a[k] <= a[2*k+2] for all k, counting elements from 0.
+    def initialize(array = [], &comp)
+        @heap = array
+        @comp = comp || proc { |x, y| x > y }
+        heapify
+    end
+
+    attr_reader :heap
+
+    # Push new element to the heap.
+    def push(item)
+    shift_down(0, @heap.push(item).size - 1)
+    end
+
+    alias << push
+    alias append push
+
+    # Pop the element with the highest priority.
+    def pop
+        latest = @heap.pop
+        return latest if empty?
+
+        ret_item = heap[0]
+        heap[0] = latest
+        shift_up(0)
+        ret_item
+    end
+
+    # Get the element with the highest priority.
+    def get
+        @heap[0]
+    end
+
+    alias top get
+
+    # Returns true if the heap is empty.
+    def empty?
+        @heap.empty?
+    end
+
+    private
+
+    def heapify
+        (@heap.size / 2 - 1).downto(0) { |i| shift_up(i) }
+    end
+
+    def shift_up(pos)
+        end_pos = @heap.size
+        start_pos = pos
+        new_item = @heap[pos]
+        left_child_pos = 2 * pos + 1
+    
+        while left_child_pos < end_pos
+            right_child_pos = left_child_pos + 1
+            if right_child_pos < end_pos && @comp.call(@heap[right_child_pos], @heap[left_child_pos])
+                left_child_pos = right_child_pos
+            end
+            # Move the higher priority child up.
+            @heap[pos] = @heap[left_child_pos]
+            pos = left_child_pos
+            left_child_pos = 2 * pos + 1
+        end
+        @heap[pos] = new_item
+        shift_down(start_pos, pos)
+    end
+
+    def shift_down(star_pos, pos)
+        new_item = @heap[pos]
+        while pos > star_pos
+            parent_pos = (pos - 1) >> 1
+            parent = @heap[parent_pos]
+            break if @comp.call(parent, new_item)
+
+            @heap[pos] = parent
+            pos = parent_pos
+        end
+        @heap[pos] = new_item
+    end
+end
+# エラトステネスの篩で素数列挙して高速に素因数分解したい！
+# ref: https://atcoder.jp/contests/abc177/editorial/82
+class PrimeDivWithSieve
+    def initialize(n)
+        @sieve = [] # nまでの素数を入れる
+        @min_div = {} # keyの値の最小の素因数を入れる
+        # 他を篩落とし得る素数はsqrtを上限にできる
+        (2..Math.sqrt(n).floor).each do |i|
+            next if @min_div[i] # ここに値が入ってる = ふるい落とされている
+            @sieve << i # ふるい落とされずに来たらそいつは素数
+    
+            sieve_target = i * i
+            while sieve_target <= n do
+            @min_div[sieve_target] ||= i
+            sieve_target += i
+            end
+        end
+        (Math.sqrt(n).floor.next..n).each do |i|
+            next if @min_div[i]
+            @sieve << i
+        end
+    end
+    # Integer#prime_division と同じ値を返すようにする
+    # https://docs.ruby-lang.org/ja/latest/method/Integer/i/prime_division.html
+    def prime_division(num)
+        return num if !@min_div[num] # 素数のときすぐ返す
+        return_num = 1 # [[a, x], [b, y]] <=> num = a^x * b^y
+        while num > 1 do
+            prime = @min_div[num] # 最小の素因数, nil => numが素数
+            break return_num *= num if !prime
+            div_total = 0
+            while num % prime == 0 do
+            num /= prime
+            div_total += 1
+            end
+            return_num *= prime  if div_total % 2 != 0
+        end
+        return_num
+    end
+    def prime_list
+        @sieve
+    end
+end
+HeapQueue = PriorityQueue
+main
